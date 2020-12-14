@@ -18,7 +18,7 @@ extern "C" {
     int load(ErlNifEnv* env, void** priv_data, ERL_NIF_TERM load_info)
     {
         ErlNifResourceFlags flags = ErlNifResourceFlags(ERL_NIF_RT_CREATE|ERL_NIF_RT_TAKEOVER);
-        ErlNifResourceType* res_type = enif_open_resource_type(env, 0, "esdj_dom_parser", dom_parser_dtor, flags, 0);
+        ErlNifResourceType* res_type = enif_open_resource_type(env, 0, "esimdjson_dom_parser", dom_parser_dtor, flags, 0);
         if (!res_type) return -1;
         *priv_data = (void*) res_type;
         return 0;
@@ -162,5 +162,5 @@ extern "C" {
         {"new", 1, nif_new},
     };
 
-    ERL_NIF_INIT(esdj, nif_funcs, load, 0, 0, 0);
+    ERL_NIF_INIT(esimdjson, nif_funcs, load, 0, 0, 0);
 }

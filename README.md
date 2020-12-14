@@ -1,4 +1,4 @@
-esdj
+esimdjson
 =====
 
 An Erlang wrapper for the [simdjson](https://github.com/simdjson/simdjson) library.

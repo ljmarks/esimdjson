@@ -1,9 +1,9 @@
--module(esdj).
+-module(esimdjson).
 -export([new/1, parse/2]).
 -on_load(init/0).
 
--define(APPNAME, esdj).
--define(LIBNAME, esdj).
+-define(APPNAME, esimdjson).
+-define(LIBNAME, esimdjson).
 
 new(_) ->
     not_loaded(?LINE).
