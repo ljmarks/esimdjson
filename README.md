@@ -9,7 +9,10 @@ Features
 --------
 - [ ] Exception handling
 - [ ] Benchmarks
-- [x] DOM API
+- [ ] DOM API
+    - [x] parse binary
+    - [x] parse file
+    - [ ] parser options
 - [ ] [On-demand API](https://github.com/simdjson/simdjson/blob/master/doc/ondemand.md)
 - [ ] Tests
 
@@ -30,6 +33,14 @@ And another one:
 ```erlang
 3> esimdjson:parse(Parser, <<"{\"name\": \"B. E. Muser\", \"age\": 23}">>).
 {ok,#{<<"age">> => 23,<<"name">> => <<"B. E. Muser">>}}
+```
+
+You can also load and parse from a file:
+```erlang
+3> esimdjson:load(Parser, "employees.json").
+{ok,[#{<<"age">> => 23,<<"name">> => <<"B. E. Muser">>},
+     #{<<"age">> => 30,<<"name">> => <<"Al O. Cater">>},
+     #{<<"age">> => 52,<<"name">> => <<"Joe Armstrong">>}]}
 ```
 
 Build
