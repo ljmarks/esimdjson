@@ -51,7 +51,6 @@ extern "C" {
         /*TODO: 
          * - max_capacity option (https://github.com/simdjson/simdjson/blob/master/doc/performance.md#reusing-the-parser-for-maximum-efficiency)
          * - fixed_capacity option (ditto)
-         * - destructor for parser object (enif_free the original buffer)
          */
         ErlNifResourceType* res_type = (ErlNifResourceType*) enif_priv_data(env);
         
