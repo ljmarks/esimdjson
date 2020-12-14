@@ -3,6 +3,8 @@ esimdjson
 
 An Erlang wrapper for the [simdjson](https://github.com/simdjson/simdjson) library.
 
+**WARNING**: The software contained in this repository is a work in progress.
+
 Features
 --------
 - [x] DOM API
