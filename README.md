@@ -45,5 +45,9 @@ You can also load and parse from a file:
 
 Build
 -----
+```bash
+$ rebar3 compile
+```
 
-    $ rebar3 compile
+**NOTE**: Your compiler will have to support [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) if you want to build the NIF binaries,
+since `simdjson` uses the `std::string_view` class.
