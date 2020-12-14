@@ -49,5 +49,10 @@ Build
 $ rebar3 compile
 ```
 
+Emit debugging information for GDB:
+```bash
+$ pushd c_src; make clean; CXX_DEBUG=true make; popd
+```
+
 **NOTE**: Your compiler will have to support [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) if you want to build the NIF binaries,
 since `simdjson` uses the `std::string_view` class.
