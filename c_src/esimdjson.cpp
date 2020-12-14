@@ -10,6 +10,8 @@ ERL_NIF_TERM mk_ok_result(ErlNifEnv *env, ERL_NIF_TERM result);
 ERL_NIF_TERM mk_error(ErlNifEnv *env, const char *mesg);
 static ERL_NIF_TERM nif_parse(ErlNifEnv *env, int argc,
                               const ERL_NIF_TERM argv[]);
+static ERL_NIF_TERM nif_load(ErlNifEnv *env, int argc,
+                              const ERL_NIF_TERM argv[]);
 static ERL_NIF_TERM nif_new(ErlNifEnv *env, int argc,
                             const ERL_NIF_TERM argv[]);
 int load(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM load_info);
@@ -65,6 +67,30 @@ static ERL_NIF_TERM nif_new(ErlNifEnv *env, int argc,
   enif_release_resource(parser_res);
 
   return mk_ok_result(env, res_term);
+}
+
+static ERL_NIF_TERM nif_load(ErlNifEnv *env, int argc,
+                              const ERL_NIF_TERM argv[]) {
+  if (argc != 2)
+    return enif_make_badarg(env);
+
+  ErlNifResourceType *res_type = (ErlNifResourceType *)enif_priv_data(env);
+  simdjson::dom::parser *pparser;
+  if (!enif_get_resource(env, argv[0], res_type, (void **)&pparser))
+    return enif_make_badarg(env);
+
+  unsigned int path_size; 
+  if (!enif_get_list_length(env, argv[1], &path_size)) return enif_make_badarg(env);
+  char path[path_size + 1]; 
+  if (!enif_get_string(env, argv[1], path, path_size + 1, ERL_NIF_LATIN1))
+      return enif_make_badarg(env);
+
+  simdjson::dom::element element = pparser->load(path);
+
+  ERL_NIF_TERM result;
+  make_term_from_dom(env, element, &result);
+
+  return mk_ok_result(env, result);
 }
 
 static ERL_NIF_TERM nif_parse(ErlNifEnv *env, int argc,
@@ -156,6 +182,7 @@ void dom_parser_dtor(ErlNifEnv *env, void *obj) {
 
 static ErlNifFunc nif_funcs[] = {
     {"parse", 2, nif_parse, ERL_NIF_DIRTY_JOB_CPU_BOUND},
+    {"load", 2, nif_load, ERL_NIF_DIRTY_JOB_CPU_BOUND},
     {"new", 1, nif_new},
 };
 
