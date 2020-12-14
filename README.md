@@ -13,6 +13,24 @@ Features
 - [ ] Tests
 
 
+Usage
+-----
+Allocate buffers to re-use across multiple documents by creating a new parser:
+```erlang
+1> {ok, Parser} = esimdjson:new([]).
+{ok,#Ref<0.1676207467.4139122690.98770>}
+```
+Parse a binary:
+```erlang
+2> esimdjson:parse(Parser, <<"[1,2,3]">>).
+{ok,[1,2,3]}
+```
+And another one:
+```erlang
+3> esimdjson:parse(Parser, <<"{\"name\": \"B. E. Muser\", \"age\": 23}">>).
+{ok,#{<<"age">> => 23,<<"name">> => <<"B. E. Muser">>}}
+```
+
 Build
 -----
 
