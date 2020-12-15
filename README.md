@@ -10,9 +10,15 @@ Features
 - [x] Basic error handling
 - [ ] Benchmarks
 - [ ] DOM API
-    - [x] parse binary
-    - [x] parse file
-    - [ ] parser options
+    - [x] Arrays
+    - [x] Objects
+    - [x] String type
+    - [x] Number types
+    - [ ] Null type
+    - [ ] Boolean type
+    - [x] Parse binary
+    - [x] Parse file
+    - [ ] Parser options
 - [ ] [On-demand API](https://github.com/simdjson/simdjson/blob/master/doc/ondemand.md)
 - [ ] Tests
 
