@@ -75,7 +75,7 @@ int load(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM load_info) {
   ErlNifResourceFlags flags =
       ErlNifResourceFlags(ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER);
   ErlNifResourceType *res_type = enif_open_resource_type(
-      env, 0, "esimdjson_dom_parser", dom_parser_dtor, flags, 0);
+      env, nullptr, "esimdjson_dom_parser", dom_parser_dtor, flags, nullptr);
   if (!res_type)
     return -1;
   *priv_data = (void *)res_type;
@@ -257,4 +257,4 @@ static ErlNifFunc nif_funcs[] = {
     {"new", 1, nif_new},
 };
 
-ERL_NIF_INIT(esimdjson, nif_funcs, load, 0, 0, 0);
+ERL_NIF_INIT(esimdjson, nif_funcs, load, nullptr, nullptr, nullptr);
