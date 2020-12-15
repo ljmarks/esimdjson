@@ -135,6 +135,8 @@ int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
   } break;
   case simdjson::dom::element_type::OBJECT: {
     simdjson::dom::object obj = simdjson::dom::object(element);
+    // TODO: VLAs are (probably?) a bad idea. Use something
+    // which is more explicit about asking for stack memory.
     ERL_NIF_TERM keys[obj.size()];
     ERL_NIF_TERM values[obj.size()];
 
