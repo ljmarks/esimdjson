@@ -8,6 +8,21 @@ int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info) {
   if (!res_type)
     return -1;
   *priv_data = (void *)res_type;
+
+  // Make atoms
+  // This is an optimization to avoid making atoms in the NIF callbacks.
+  // Since the below variables are static they will be available globally and,
+  // since atoms are never garbage collected, we can still use them even though
+  // the environment used to create them will no longer be valid after return
+  // from the `load` callback.
+  //
+  // See e.g.:
+  // https://github.com/erlang/otp/blob/master/erts/emulator/nifs/common/erl_tracer_nif.c
+  atom_ok = enif_make_atom(env, "ok");
+  atom_error = enif_make_atom(env, "error");
+  atom_null = enif_make_atom(env, "null");
+  atom_true = enif_make_atom(env, "true");
+  atom_false = enif_make_atom(env, "false");
   return 0;
 }
 
@@ -22,11 +37,11 @@ ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *atom) {
 }
 
 ERL_NIF_TERM make_ok_result(ErlNifEnv *env, const ERL_NIF_TERM result) {
-  return enif_make_tuple2(env, make_atom(env, "ok"), result);
+  return enif_make_tuple2(env, atom_ok, result);
 }
 
 ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason) {
-  return enif_make_tuple2(env, make_atom(env, "error"), reason);
+  return enif_make_tuple2(env, atom_error, reason);
 }
 
 ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
@@ -41,7 +56,7 @@ ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
 }
 
 ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
-                            const ERL_NIF_TERM argv[]) {
+                     const ERL_NIF_TERM argv[]) {
   /*TODO:
    * - max_capacity option
    * (https://github.com/simdjson/simdjson/blob/master/doc/performance.md#reusing-the-parser-for-maximum-efficiency)
@@ -62,7 +77,7 @@ ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
 }
 
 ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
-                             const ERL_NIF_TERM argv[]) {
+                      const ERL_NIF_TERM argv[]) {
   if (argc != 2)
     return enif_make_badarg(env);
 
@@ -92,7 +107,7 @@ ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
 }
 
 ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
-                              const ERL_NIF_TERM argv[]) {
+                       const ERL_NIF_TERM argv[]) {
   if (argc != 2)
     return enif_make_badarg(env);
 
