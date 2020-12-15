@@ -56,22 +56,23 @@ char const *const error_msg[simdjson::NUM_ERROR_CODES]{
     [simdjson::PARSER_IN_USE] = "parser_in_use",
 };
 
-ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env, simdjson::error_code error);
+ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
+                                 const simdjson::error_code error);
 ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *atom);
-ERL_NIF_TERM make_ok_result(ErlNifEnv *env, ERL_NIF_TERM result);
-ERL_NIF_TERM make_error(ErlNifEnv *env, ERL_NIF_TERM reason);
-static ERL_NIF_TERM nif_parse(ErlNifEnv *env, int argc,
+ERL_NIF_TERM make_ok_result(ErlNifEnv *env, const ERL_NIF_TERM result);
+ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason);
+static ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
                               const ERL_NIF_TERM argv[]);
-static ERL_NIF_TERM nif_load(ErlNifEnv *env, int argc,
+static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
                              const ERL_NIF_TERM argv[]);
-static ERL_NIF_TERM nif_new(ErlNifEnv *env, int argc,
+static ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                             const ERL_NIF_TERM argv[]);
-int load(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM load_info);
-int make_term_from_dom(ErlNifEnv *env, simdjson::dom::element element,
+int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info);
+int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
                        ERL_NIF_TERM *term);
 void dom_parser_dtor(ErlNifEnv *env, void *obj);
 
-int load(ErlNifEnv *env, void **priv_data, ERL_NIF_TERM load_info) {
+int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info) {
   ErlNifResourceFlags flags =
       ErlNifResourceFlags(ERL_NIF_RT_CREATE | ERL_NIF_RT_TAKEOVER);
   ErlNifResourceType *res_type = enif_open_resource_type(
@@ -92,15 +93,16 @@ ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *atom) {
   return ret;
 }
 
-ERL_NIF_TERM make_ok_result(ErlNifEnv *env, ERL_NIF_TERM result) {
+ERL_NIF_TERM make_ok_result(ErlNifEnv *env, const ERL_NIF_TERM result) {
   return enif_make_tuple2(env, make_atom(env, "ok"), result);
 }
 
-ERL_NIF_TERM make_error(ErlNifEnv *env, ERL_NIF_TERM reason) {
+ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason) {
   return enif_make_tuple2(env, make_atom(env, "error"), reason);
 }
 
-ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env, simdjson::error_code error) {
+ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
+                                 const simdjson::error_code error) {
   ERL_NIF_TERM reason_atom = make_atom(env, error_msg[error]);
   std::string error_str = simdjson::error_message(error);
   ERL_NIF_TERM reason_str =
@@ -110,7 +112,7 @@ ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env, simdjson::error_code error) {
   return make_error(env, reason);
 }
 
-static ERL_NIF_TERM nif_new(ErlNifEnv *env, int argc,
+static ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                             const ERL_NIF_TERM argv[]) {
   /*TODO:
    * - max_capacity option
@@ -131,7 +133,7 @@ static ERL_NIF_TERM nif_new(ErlNifEnv *env, int argc,
   return make_ok_result(env, res_term);
 }
 
-static ERL_NIF_TERM nif_load(ErlNifEnv *env, int argc,
+static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
                              const ERL_NIF_TERM argv[]) {
   if (argc != 2)
     return enif_make_badarg(env);
@@ -161,7 +163,7 @@ static ERL_NIF_TERM nif_load(ErlNifEnv *env, int argc,
   return make_ok_result(env, result);
 }
 
-static ERL_NIF_TERM nif_parse(ErlNifEnv *env, int argc,
+static ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
                               const ERL_NIF_TERM argv[]) {
   if (argc != 2)
     return enif_make_badarg(env);
@@ -186,7 +188,7 @@ static ERL_NIF_TERM nif_parse(ErlNifEnv *env, int argc,
   return make_ok_result(env, result);
 }
 
-int make_term_from_dom(ErlNifEnv *env, simdjson::dom::element element,
+int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
                        ERL_NIF_TERM *term) {
   switch (element.type()) {
   case simdjson::dom::element_type::INT64:
