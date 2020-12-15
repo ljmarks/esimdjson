@@ -146,7 +146,7 @@ static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
   unsigned int path_size;
   if (!enif_get_list_length(env, argv[1], &path_size))
     return enif_make_badarg(env);
-  std::unique_ptr<char[]> path { new char[path_size + 1] };
+  std::unique_ptr<char[]> path{new char[path_size + 1]};
   if (!enif_get_string(env, argv[1], path.get(), path_size + 1, ERL_NIF_LATIN1))
     return enif_make_badarg(env);
 
@@ -207,9 +207,10 @@ int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
   } break;
   case simdjson::dom::element_type::OBJECT: {
     simdjson::dom::object obj = simdjson::dom::object(element);
-    std::vector<ERL_NIF_TERM> keys(obj.size());
-    std::vector<ERL_NIF_TERM> values(obj.size());
+    ERL_NIF_TERM keys[obj.size()];
+    ERL_NIF_TERM values[obj.size()];
 
+    size_t i = 0;
     for (auto [key, value] : obj) {
       ERL_NIF_TERM k;
       char *k_bin = (char *)enif_make_new_binary(env, key.size(), &k);
@@ -217,10 +218,11 @@ int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
 
       ERL_NIF_TERM v;
       make_term_from_dom(env, value, &v);
-      keys.push_back(k);
-      values.push_back(v);
+      keys[i] = k;
+      values[i] = v;
+      i++;
     }
-    enif_make_map_from_arrays(env, keys.data(), values.data(), obj.size(), term);
+    enif_make_map_from_arrays(env, keys, values, obj.size(), term);
 
   } break;
   case simdjson::dom::element_type::ARRAY: {
