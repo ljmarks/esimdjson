@@ -65,6 +65,7 @@ ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
 ERL_NIF_TERM make_atom(ErlNifEnv *env, const char *atom);
 ERL_NIF_TERM make_ok_result(ErlNifEnv *env, const ERL_NIF_TERM result);
 ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason);
+extern "C" {
 static ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
                               const ERL_NIF_TERM argv[]);
 static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
@@ -72,6 +73,8 @@ static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
 static ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                             const ERL_NIF_TERM argv[]);
 int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info);
+}
+
 int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
                        ERL_NIF_TERM *term);
 void dom_parser_dtor(ErlNifEnv *env, void *obj);
