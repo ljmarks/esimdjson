@@ -41,11 +41,11 @@ else ifeq ($(UNAME_SYS), Linux)
 	CXXFLAGS ?= $(OPT_FLAGS) -finline-functions -Wall
 endif
 
-CFLAGS += -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR) -I $(SIMDJSON_INCLUDE_DIR)
-CXXFLAGS += -pedantic -std=c++17 -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR) -I $(SIMDJSON_INCLUDE_DIR)
+CFLAGS += -flto -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR) -I $(SIMDJSON_INCLUDE_DIR)
+CXXFLAGS += -flto -pedantic -std=c++17 -fPIC -I $(ERTS_INCLUDE_DIR) -I $(ERL_INTERFACE_INCLUDE_DIR) -I $(SIMDJSON_INCLUDE_DIR)
 
 LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -lerl_interface -lei
-LDFLAGS += -shared
+LDFLAGS += -shared -flto
 
 # Verbosity.
 
