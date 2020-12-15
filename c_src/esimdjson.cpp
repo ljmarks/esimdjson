@@ -1,59 +1,63 @@
 #include "erl_nif.h"
 #include "simdjson.h"
 
-// See simdjson/simdjson.h:2050
-char const *const error_msg[simdjson::NUM_ERROR_CODES]{
+struct error_txt {
+  simdjson::error_code code;
+  const char *txt;
+};
+
+const error_txt error_code_txt[]{
     /// No error
-    [simdjson::SUCCESS] = "",
+    {simdjson::SUCCESS, ""},
     /// This parser can't support a document that big
-    [simdjson::CAPACITY] = "capacity",
+    {simdjson::CAPACITY, "capacity"},
     /// Error allocating memory, most likely out of memory
-    [simdjson::MEMALLOC] = "memalloc",
+    {simdjson::MEMALLOC, "memalloc"},
     /// Something went wrong while writing to the tape (stage 2), this is a
     /// generic error
-    [simdjson::TAPE_ERROR] = "tape_error",
+    {simdjson::TAPE_ERROR, "tape_error"},
     /// Your document exceeds the user-specified depth limitation
-    [simdjson::DEPTH_ERROR] = "depth_error",
+    {simdjson::DEPTH_ERROR, "depth_error"},
     /// Problem while parsing a string
-    [simdjson::STRING_ERROR] = "string_error",
+    {simdjson::STRING_ERROR, "string_error"},
     /// Problem while parsing an atom starting with the letter 't'
-    [simdjson::T_ATOM_ERROR] = "t_atom_error",
+    {simdjson::T_ATOM_ERROR, "t_atom_error"},
     /// Problem while parsing an atom starting with the letter 'f'
-    [simdjson::F_ATOM_ERROR] = "f_atom_error",
+    {simdjson::F_ATOM_ERROR, "f_atom_error"},
     /// Problem while parsing an atom starting with the letter 'n'
-    [simdjson::N_ATOM_ERROR] = "n_atom_error",
+    {simdjson::N_ATOM_ERROR, "n_atom_error"},
     /// Problem while parsing a number
-    [simdjson::NUMBER_ERROR] = "number_error",
+    {simdjson::NUMBER_ERROR, "number_error"},
     /// The input is not valid UTF-8
-    [simdjson::UTF8_ERROR] = "utf8_error",
+    {simdjson::UTF8_ERROR, "utf8_error"},
     /// Unknown error, or uninitialized document
-    [simdjson::UNINITIALIZED] = "uninitialized",
+    {simdjson::UNINITIALIZED, "uninitialized"},
     /// No structural element found
-    [simdjson::EMPTY] = "empty",
+    {simdjson::EMPTY, "empty"},
     /// Found unescaped characters in a string.
-    [simdjson::UNESCAPED_CHARS] = "unescaped_chars",
+    {simdjson::UNESCAPED_CHARS, "unescaped_chars"},
     /// Missing quote at the end
-    [simdjson::UNCLOSED_STRING] = "unclosed_string",
+    {simdjson::UNCLOSED_STRING, "unclosed_string"},
     /// Unsupported architecture
-    [simdjson::UNSUPPORTED_ARCHITECTURE] = "unsupported_architecture",
+    {simdjson::UNSUPPORTED_ARCHITECTURE, "unsupported_architecture"},
     /// JSON element has a different type than user expected
-    [simdjson::INCORRECT_TYPE] = "incorrect_type",
+    {simdjson::INCORRECT_TYPE, "incorrect_type"},
     /// JSON number does not fit in 64 bits
-    [simdjson::NUMBER_OUT_OF_RANGE] = "number_out_of_range",
+    {simdjson::NUMBER_OUT_OF_RANGE, "number_out_of_range"},
     /// JSON array index too large
-    [simdjson::INDEX_OUT_OF_BOUNDS] = "index_out_of_bounds",
+    {simdjson::INDEX_OUT_OF_BOUNDS, "index_out_of_bounds"},
     /// JSON field not found in object
-    [simdjson::NO_SUCH_FIELD] = "no_such_field",
+    {simdjson::NO_SUCH_FIELD, "no_such_field"},
     /// Error reading a file
-    [simdjson::IO_ERROR] = "io_error",
+    {simdjson::IO_ERROR, "io_error"},
     /// Invalid JSON pointer reference
-    [simdjson::INVALID_JSON_POINTER] = "invalid_json_pointer",
+    {simdjson::INVALID_JSON_POINTER, "invalid_json_pointer"},
     /// Invalid URI fragment
-    [simdjson::INVALID_URI_FRAGMENT] = "invalid_uri_fragment",
+    {simdjson::INVALID_URI_FRAGMENT, "invalid_uri_fragment"},
     /// Indicative of a bug in simdjson
-    [simdjson::UNEXPECTED_ERROR] = "unexpected_error",
+    {simdjson::UNEXPECTED_ERROR, "unexpected_error"},
     /// Parser is already in use.
-    [simdjson::PARSER_IN_USE] = "parser_in_use",
+    {simdjson::PARSER_IN_USE, "parser_in_use"},
 };
 
 ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
@@ -103,7 +107,7 @@ ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason) {
 
 ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
                                  const simdjson::error_code error) {
-  ERL_NIF_TERM reason_atom = make_atom(env, error_msg[error]);
+  ERL_NIF_TERM reason_atom = make_atom(env, error_code_txt[error].txt);
   std::string error_str = simdjson::error_message(error);
   ERL_NIF_TERM reason_str =
       enif_make_string(env, error_str.data(), ERL_NIF_LATIN1);
