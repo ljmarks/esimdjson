@@ -7,7 +7,7 @@ An Erlang NIF wrapper for the [simdjson](https://github.com/simdjson/simdjson) l
 
 Features
 --------
-- [ ] Exception handling
+- [x] Basic error handling
 - [ ] Benchmarks
 - [ ] DOM API
     - [x] parse binary
