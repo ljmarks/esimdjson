@@ -43,6 +43,13 @@ You can also load and parse from a file:
      #{<<"age">> => 52,<<"name">> => <<"Joe Armstrong">>}]}
 ```
 
+The `load/2` and `parse/` functions can return an error of the form
+`{error, {Reason, Msg}}`, like this:
+```erlang
+4> esimdjson:parse(Parser, <<"[1, ">>).
+{error,{tape_error,"The JSON document has an improper structure: missing or superfluous commas, braces, missing keys, etc."}}
+```
+
 Build
 -----
 ```bash
