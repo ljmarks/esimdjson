@@ -7,7 +7,7 @@ An Erlang NIF wrapper for the [simdjson](https://github.com/simdjson/simdjson) l
 
 Features
 --------
-- [ ] Exception handling
+- [x] Basic error handling
 - [ ] Benchmarks
 - [ ] DOM API
     - [x] parse binary
@@ -41,6 +41,13 @@ You can also load and parse from a file:
 {ok,[#{<<"age">> => 23,<<"name">> => <<"B. E. Muser">>},
      #{<<"age">> => 30,<<"name">> => <<"Al O. Cater">>},
      #{<<"age">> => 52,<<"name">> => <<"Joe Armstrong">>}]}
+```
+
+The `load/2` and `parse/` functions can return an error of the form
+`{error, {Reason, Msg}}`, like this:
+```erlang
+4> esimdjson:parse(Parser, <<"[1, ">>).
+{error,{tape_error,"The JSON document has an improper structure: missing or superfluous commas, braces, missing keys, etc."}}
 ```
 
 Build
