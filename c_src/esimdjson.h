@@ -1,6 +1,12 @@
 #include "erl_nif.h"
 #include "simdjson.h"
 
+static ERL_NIF_TERM atom_ok;
+static ERL_NIF_TERM atom_error;
+static ERL_NIF_TERM atom_null;
+static ERL_NIF_TERM atom_true;
+static ERL_NIF_TERM atom_false;
+
 struct error_txt {
   simdjson::error_code code;
   const char *txt;
@@ -60,7 +66,6 @@ const error_txt error_code_txt[]{
     /// Parser is already in use.
     {simdjson::PARSER_IN_USE, "parser_in_use"},
 };
-
 
 /// NIF interface declarations
 static int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info);

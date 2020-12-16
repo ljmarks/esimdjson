@@ -77,7 +77,7 @@ $(C_SRC_OUTPUT): $(OBJECTS)
 %.o: %.C
 	$(COMPILE_CPP) $(OUTPUT_OPTION) $<
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	$(COMPILE_CPP) $(OUTPUT_OPTION) $<
 
 debug:
