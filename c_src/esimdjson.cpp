@@ -143,6 +143,12 @@ int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
   case simdjson::dom::element_type::DOUBLE:
     *term = enif_make_double(env, double(element));
     break;
+  case simdjson::dom::element_type::BOOL: {
+    *term = bool(element) ? atom_true : atom_false;
+  } break;
+  case simdjson::dom::element_type::NULL_VALUE: {
+    *term = atom_null;
+  } break;
   case simdjson::dom::element_type::STRING: {
     std::string_view str = std::string_view(element);
     char *str_bin = (char *)enif_make_new_binary(env, str.size(), term);
