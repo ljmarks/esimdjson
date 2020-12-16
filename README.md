@@ -14,8 +14,8 @@ Features
     - [x] Objects
     - [x] String type
     - [x] Number types
-    - [ ] Null type
-    - [ ] Boolean type
+    - [x] Null type
+    - [x] Boolean type
     - [x] Parse binary
     - [x] Parse file
     - [ ] Parser options
