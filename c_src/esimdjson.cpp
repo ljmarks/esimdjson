@@ -152,6 +152,21 @@ ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
   return make_ok_result(env, result);
 }
 
+ERL_NIF_TERM nif_max_capacity(ErlNifEnv *env, const int argc,
+                       const ERL_NIF_TERM argv[]) {
+    if (argc != 1)
+        return enif_make_badarg(env);
+
+  ErlNifResourceType *res_type = (ErlNifResourceType *)enif_priv_data(env);
+  simdjson::dom::parser *pparser;
+  if (!enif_get_resource(env, argv[0], res_type, (void **)&pparser))
+    return enif_make_badarg(env);
+
+  ERL_NIF_TERM result = enif_make_uint64(env, pparser->max_capacity());
+
+  return make_ok_result(env, result);
+}
+
 int get_max_capacity(ErlNifEnv *env, const ERL_NIF_TERM opt, size_t* max_cap)
 {
     int arity = 0;
@@ -257,6 +272,7 @@ static ErlNifFunc nif_funcs[] = {
     {"parse", 2, nif_parse, ERL_NIF_DIRTY_JOB_CPU_BOUND},
     {"load", 2, nif_load, ERL_NIF_DIRTY_JOB_CPU_BOUND},
     {"new", 1, nif_new},
+    {"max_capacity", 1, nif_max_capacity},
 };
 
 ERL_NIF_INIT(esimdjson, nif_funcs, load, nullptr, nullptr, nullptr)
