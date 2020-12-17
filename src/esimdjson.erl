@@ -1,5 +1,5 @@
 -module(esimdjson).
--export([new/0, new/1, load/2, parse/2]).
+-export([new/0, new/1, load/2, parse/2, max_capacity/1]).
 -on_load(init/0).
 
 -define(APPNAME, esimdjson).
@@ -15,6 +15,9 @@ load(_, _) ->
     not_loaded(?LINE).
 
 parse(_, _) ->
+    not_loaded(?LINE).
+
+max_capacity(_) ->
     not_loaded(?LINE).
 
 init() ->

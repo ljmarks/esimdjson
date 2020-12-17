@@ -42,13 +42,21 @@ The `simdjson` library will automatically allocate more memory for a parser as
 required. You can control this behaviour by passing options to `new/1`.
 To fix the capacity of the parser, use `{fixed_capacity, N}` where `N` is in bytes:
 ```erlang
-1> {ok, Parser} = esimdjson:new([{fixed_capacity, 10}]).           
-{ok,#Ref<0.1487449649.1034027009.156176>}                          
-2> esimdjson:parse(Parser, <<"[1,2,3,4,5,6,7,8,9,10]">>).          
-{error,{capacity,"This parser can't support a document that big"}} 
+1> {ok, Parser} = esimdjson:new([{fixed_capacity, 10}]).
+{ok,#Ref<0.1487449649.1034027009.156176>}
+2> esimdjson:parse(Parser, <<"[1,2,3,4,5,6,7,8,9,10]">>).
+{error,{capacity,"This parser can't support a document that big"}}
 ```
 If you would like `simdjson` to expand the capacity when necessary, but not beyond
 `M` bytes, use the `{max_capacity, M}` option.
+
+You can inspect the max capacity of a parser at runtime with `esimdjson:max_capacity/1`:
+```erlang
+1> {ok, Parser} = esimdjson:new([]).
+{ok,#Ref<0.2076621682.500039683.182263>}
+2> esimdjson:max_capacity(Parser).
+{ok,4294967295}
+```
 
 
 Build

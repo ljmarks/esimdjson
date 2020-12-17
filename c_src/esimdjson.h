@@ -79,6 +79,8 @@ static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
                              const ERL_NIF_TERM argv[]);
 static ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                             const ERL_NIF_TERM argv[]);
+static ERL_NIF_TERM nif_max_capacity(ErlNifEnv *env, const int argc,
+                            const ERL_NIF_TERM argv[]);
 
 ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
                                  const simdjson::error_code error);
