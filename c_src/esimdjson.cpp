@@ -10,19 +10,17 @@ int load(ErlNifEnv *env, void **priv_data, const ERL_NIF_TERM load_info) {
   *priv_data = (void *)res_type;
 
   // Make atoms
-  // This is an optimization to avoid making atoms in the NIF callbacks.
-  // Since the below variables are static they will be available globally and,
-  // since atoms are never garbage collected, we can still use them even though
-  // the environment used to create them will no longer be valid after return
-  // from the `load` callback.
-  //
-  // See e.g.:
+  // Static variables are used here to avoid making atoms in the NIF callbacks.
+  // See:
   // https://github.com/erlang/otp/blob/master/erts/emulator/nifs/common/erl_tracer_nif.c
   atom_ok = enif_make_atom(env, "ok");
   atom_error = enif_make_atom(env, "error");
   atom_null = enif_make_atom(env, "null");
   atom_true = enif_make_atom(env, "true");
   atom_false = enif_make_atom(env, "false");
+  atom_fixed_capacity = enif_make_atom(env, "fixed_capacity");;
+  atom_max_capacity = enif_make_atom(env, "max_capacity");
+
   return 0;
 }
 
@@ -62,13 +60,36 @@ ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
    * (https://github.com/simdjson/simdjson/blob/master/doc/performance.md#reusing-the-parser-for-maximum-efficiency)
    * - fixed_capacity option (ditto)
    */
+    ERL_NIF_TERM opt_cdr;
+    ERL_NIF_TERM opt_car;
+    size_t max_cap = 0;
+    size_t fixed_cap = 0;
+
+    if (argc != 1 || !enif_is_list(env, (opt_cdr = argv[0])))
+        return enif_make_badarg(env);
+
+    while(enif_get_list_cell(env, opt_cdr, &opt_car, &opt_cdr)) {
+        if (get_max_capacity(env, opt_car, &max_cap)) continue;
+        else if (get_fixed_capacity(env, opt_car, &fixed_cap)) continue;
+        else return enif_make_badarg(env);
+    }
+
+  // It only makes sense to specify one of fixed_capacity or max_capacity
+  if (max_cap && fixed_cap) return enif_make_badarg(env);
+
   ErlNifResourceType *res_type = (ErlNifResourceType *)enif_priv_data(env);
 
   void *parser_res =
       enif_alloc_resource(res_type, sizeof(simdjson::dom::parser));
 
-  // "placement new"
-  new (parser_res) simdjson::dom::parser();
+  simdjson::dom::parser* parser;
+  if (max_cap)
+    parser = new (parser_res) simdjson::dom::parser(max_cap);
+  else if (fixed_cap) {
+    parser = new (parser_res) simdjson::dom::parser(0);
+    auto error = parser->allocate(fixed_cap);
+    if (error) return enif_make_badarg(env);
+  } else parser = new (parser_res) simdjson::dom::parser();
 
   ERL_NIF_TERM res_term = enif_make_resource(env, parser_res);
   enif_release_resource(parser_res);
@@ -129,6 +150,34 @@ ERL_NIF_TERM nif_parse(ErlNifEnv *env, const int argc,
   make_term_from_dom(env, element, &result);
 
   return make_ok_result(env, result);
+}
+
+int get_max_capacity(ErlNifEnv *env, const ERL_NIF_TERM opt, size_t* max_cap)
+{
+    int arity = 0;
+    int ret = 0;
+    const ERL_NIF_TERM* tuple_array;
+    if (enif_get_tuple(env, opt, &arity, &tuple_array)
+            && arity == 2
+            && enif_is_identical(tuple_array[0], atom_max_capacity)
+            && enif_get_uint64(env, tuple_array[1], max_cap))
+            ret = 1;
+
+    return ret;
+}
+
+int get_fixed_capacity(ErlNifEnv *env, const ERL_NIF_TERM opt, size_t* fixed_cap)
+{
+    int arity = 0;
+    int ret = 0;
+    const ERL_NIF_TERM* tuple_array;
+    if (enif_get_tuple(env, opt, &arity, &tuple_array)
+            && arity == 2
+            && enif_is_identical(tuple_array[0], atom_fixed_capacity)
+            && enif_get_uint64(env, tuple_array[1], fixed_cap))
+            ret = 1;
+
+    return ret;
 }
 
 int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
