@@ -9,7 +9,7 @@ Usage
 -----
 Allocate buffers to re-use across multiple documents by creating a new parser:
 ```erlang
-1> {ok, Parser} = esimdjson:new([]).
+1> {ok, Parser} = esimdjson:new().
 {ok,#Ref<0.1676207467.4139122690.98770>}
 ```
 Parse a binary:
