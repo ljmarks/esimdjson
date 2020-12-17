@@ -6,6 +6,8 @@ static ERL_NIF_TERM atom_error;
 static ERL_NIF_TERM atom_null;
 static ERL_NIF_TERM atom_true;
 static ERL_NIF_TERM atom_false;
+static ERL_NIF_TERM atom_fixed_capacity;
+static ERL_NIF_TERM atom_max_capacity;
 
 struct error_txt {
   simdjson::error_code code;
@@ -86,3 +88,5 @@ ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason);
 int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
                        ERL_NIF_TERM *term);
 void dom_parser_dtor(ErlNifEnv *env, void *obj);
+int get_max_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t* max_cap);
+int get_fixed_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t* fixed_cap);
