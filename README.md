@@ -5,24 +5,6 @@ An Erlang NIF wrapper for the [simdjson](https://github.com/simdjson/simdjson) l
 
 **WARNING**: The software contained in this repository is a work in progress.
 
-Features
---------
-- [x] Basic error handling
-- [ ] Benchmarks
-- [ ] DOM API
-    - [x] Arrays
-    - [x] Objects
-    - [x] String type
-    - [x] Number types
-    - [x] Null type
-    - [x] Boolean type
-    - [x] Parse binary
-    - [x] Parse file
-    - [x] Parser options
-- [ ] [On-demand API](https://github.com/simdjson/simdjson/blob/master/doc/ondemand.md)
-- [ ] Tests
-
-
 Usage
 -----
 Allocate buffers to re-use across multiple documents by creating a new parser:
@@ -82,3 +64,20 @@ $ pushd c_src; make clean; CXX_DEBUG=true make; popd
 
 **NOTE**: Your compiler will have to support [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) if you want to build the NIF binaries,
 since `simdjson` uses the `std::string_view` class.
+
+Features
+--------
+- [x] Basic error handling
+- [ ] Benchmarks
+- [x] DOM API
+    - [x] Arrays
+    - [x] Objects
+    - [x] String type
+    - [x] Number types
+    - [x] Null type
+    - [x] Boolean type
+    - [x] Parse binary
+    - [x] Parse file
+    - [x] Parser options
+- [ ] [On-demand API](https://github.com/simdjson/simdjson/blob/master/doc/ondemand.md)
+- [ ] Tests
