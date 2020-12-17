@@ -80,7 +80,7 @@ static ERL_NIF_TERM nif_load(ErlNifEnv *env, const int argc,
 static ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                             const ERL_NIF_TERM argv[]);
 static ERL_NIF_TERM nif_max_capacity(ErlNifEnv *env, const int argc,
-                            const ERL_NIF_TERM argv[]);
+                                     const ERL_NIF_TERM argv[]);
 
 ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
                                  const simdjson::error_code error);
@@ -90,5 +90,5 @@ ERL_NIF_TERM make_error(ErlNifEnv *env, const ERL_NIF_TERM reason);
 int make_term_from_dom(ErlNifEnv *env, const simdjson::dom::element element,
                        ERL_NIF_TERM *term);
 void dom_parser_dtor(ErlNifEnv *env, void *obj);
-int get_max_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t* max_cap);
-int get_fixed_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t* fixed_cap);
+int get_max_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t *max_cap);
+int get_fixed_capacity(ErlNifEnv *env, ERL_NIF_TERM opt, size_t *fixed_cap);
