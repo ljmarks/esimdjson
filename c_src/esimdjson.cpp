@@ -55,11 +55,6 @@ ERL_NIF_TERM make_simdjson_error(ErlNifEnv *env,
 
 ERL_NIF_TERM nif_new(ErlNifEnv *env, const int argc,
                      const ERL_NIF_TERM argv[]) {
-  /*TODO:
-   * - max_capacity option
-   * (https://github.com/simdjson/simdjson/blob/master/doc/performance.md#reusing-the-parser-for-maximum-efficiency)
-   * - fixed_capacity option (ditto)
-   */
   ERL_NIF_TERM opt_cdr;
   ERL_NIF_TERM opt_car;
   size_t max_cap = 0;
